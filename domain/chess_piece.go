@@ -1,6 +1,6 @@
 package domain
 
-type Piece struct {
+type ChessPiece struct {
 	Type  PieceType
 	Color PieceColor
 }
