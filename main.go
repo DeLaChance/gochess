@@ -1,7 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"domain"
+	"fmt"
+)
 
 func main() {
-	fmt.Println("Hello, world.")
+	pieceTypeValues := domain.PieceTypeValues()
+	for _, pieceTypeValue := range pieceTypeValues {
+		fmt.Println(pieceTypeValue.String())
+	}
+
 }
