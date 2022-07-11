@@ -4,17 +4,14 @@ type ChessBoard struct {
 	Cells [8][8]BoardCell
 }
 
-func InitialChessBoard() ChessBoard {
+func (chessBoard *ChessBoard) ApplyAction(action PieceAction) {
+	oldX, oldY := calculateTwoDimensionalPosition(action.FromPosition)
+	newX, newY := calculateTwoDimensionalPosition(action.ToPosition)
 
-	chessBoard := ChessBoard{}
+	movedPiece := *chessBoard.Cells[oldX][oldY].Contents
 
-	chessBoard.fillBlackMainRow()
-	chessBoard.fillRowWithPawns(1, BLACK)
-
-	chessBoard.fillWhiteMainRow()
-	chessBoard.fillRowWithPawns(6, WHITE)
-
-	return chessBoard
+	chessBoard.Cells[newX][newY].fillCell(movedPiece)
+	chessBoard.Cells[oldX][oldY].emptyCell()
 }
 
 func (value ChessBoard) String() string {
@@ -36,11 +33,29 @@ func (value ChessBoard) String() string {
 	return output
 }
 
+// Static methods
+func InitialChessBoard() ChessBoard {
+
+	chessBoard := ChessBoard{}
+
+	chessBoard.fillBlackMainRow()
+	chessBoard.fillRowWithPawns(1, BLACK)
+
+	chessBoard.fillWhiteMainRow()
+	chessBoard.fillRowWithPawns(6, WHITE)
+
+	return chessBoard
+}
+
 // Private methods
 func (chessBoard *ChessBoard) fillRowWithPawns(rowIndex int, pieceColor PieceColor) {
 	for index := 0; index < 8; index += 1 {
 		chessBoard.Cells[rowIndex][index] = createCell(ChessPiece{PAWN, pieceColor})
 	}
+}
+
+func calculateTwoDimensionalPosition(position int) (int, int) {
+	return position / 8, position % 8
 }
 
 func (chessBoard *ChessBoard) fillWhiteMainRow() {

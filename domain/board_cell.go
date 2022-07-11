@@ -23,6 +23,14 @@ func (value BoardCell) String() string {
 	return "|" + fmt.Sprintf("%-1s", stringValue)
 }
 
+func (cell *BoardCell) fillCell(piece ChessPiece) {
+	cell.Contents = &piece
+}
+
+func (cell *BoardCell) emptyCell() {
+	cell.Contents = nil
+}
+
 func createCell(value ChessPiece) BoardCell {
 	return BoardCell{&value}
 }
