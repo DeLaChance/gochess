@@ -22,3 +22,11 @@ func (value BoardCell) String() string {
 
 	return "|" + fmt.Sprintf("%-12s", stringValue) + "|"
 }
+
+func createCell(value ChessPiece) BoardCell {
+	return BoardCell{&value}
+}
+
+func createEmptyCell() BoardCell {
+	return BoardCell{}
+}
