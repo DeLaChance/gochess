@@ -11,4 +11,7 @@ func main() {
 		fmt.Println(pieceTypeValue.String())
 	}
 
+	chessBoard := domain.InitialChessBoard()
+	fmt.Println(chessBoard.String())
+
 }
