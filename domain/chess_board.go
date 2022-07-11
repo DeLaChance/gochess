@@ -20,11 +20,18 @@ func InitialChessBoard() ChessBoard {
 func (value ChessBoard) String() string {
 	output := ""
 	for _, rowOfCells := range value.Cells {
+
+		output += "-----------------\n"
+
 		for _, cell := range rowOfCells {
 			output += cell.String()
 		}
-		output += "\n"
+
+		output += "|\n"
+
 	}
+
+	output += "-----------------\n"
 
 	return output
 }

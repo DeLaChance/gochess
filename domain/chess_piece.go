@@ -1,12 +1,41 @@
 package domain
 
-import "fmt"
-
 type ChessPiece struct {
 	Type  PieceType
 	Color PieceColor
 }
 
 func (value ChessPiece) String() string {
-	return fmt.Sprintf("%s %s", value.Color.String(), value.Type.String())
+	if value.Color == WHITE {
+		switch {
+		case value.Type == PAWN:
+			return "♙"
+		case value.Type == ROOK:
+			return "♖"
+		case value.Type == KNIGHT:
+			return "♘"
+		case value.Type == BISHOP:
+			return "♙"
+		case value.Type == QUEEN:
+			return "♕"
+		}
+
+		return "♔"
+	} else {
+		switch {
+		case value.Type == PAWN:
+			return "♟"
+		case value.Type == ROOK:
+			return "♜"
+		case value.Type == KNIGHT:
+			return "♞"
+		case value.Type == BISHOP:
+			return "♝"
+		case value.Type == QUEEN:
+			return "♛"
+		}
+
+		return "♚"
+
+	}
 }

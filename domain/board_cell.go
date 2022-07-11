@@ -20,7 +20,7 @@ func (value BoardCell) String() string {
 		stringValue = chessPiece.String()
 	}
 
-	return "|" + fmt.Sprintf("%-12s", stringValue) + "|"
+	return "|" + fmt.Sprintf("%-1s", stringValue)
 }
 
 func createCell(value ChessPiece) BoardCell {
