@@ -1,8 +1,19 @@
 package domain
 
 type ChessGame struct {
-	Board ChessBoard
-	Turn  PieceColor
+	Board       ChessBoard
+	ActiveColor PieceColor
+}
+
+func (game *ChessGame) GeneratePossibleActions() []PieceAction {
+	activeCells := game.Board.FindCellsByColor(game.ActiveColor)
+
+	var pieceActions []PieceAction
+	for _, activeCell := range activeCells {
+		pieceActions = game.Board.GeneratePossibleActions(activeCell)
+	}
+
+	return pieceActions
 }
 
 func (game *ChessGame) ApplyAction(action PieceAction) {
@@ -17,9 +28,9 @@ func InitialChessGame() ChessGame {
 
 // Private methods
 func (game *ChessGame) swapTurns() {
-	if game.Turn == WHITE {
-		game.Turn = BLACK
+	if game.ActiveColor == WHITE {
+		game.ActiveColor = BLACK
 	} else {
-		game.Turn = WHITE
+		game.ActiveColor = WHITE
 	}
 }

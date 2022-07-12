@@ -3,6 +3,8 @@ package domain
 import "fmt"
 
 type BoardCell struct {
+	x        int
+	y        int
 	Contents *ChessPiece
 }
 
@@ -31,10 +33,10 @@ func (cell *BoardCell) emptyCell() {
 	cell.Contents = nil
 }
 
-func createCell(value ChessPiece) BoardCell {
-	return BoardCell{&value}
+func createCell(value ChessPiece, x int, y int) BoardCell {
+	return BoardCell{x, y, &value}
 }
 
-func createEmptyCell() BoardCell {
-	return BoardCell{}
+func createEmptyCell(x int, y int) BoardCell {
+	return BoardCell{x, y, nil}
 }

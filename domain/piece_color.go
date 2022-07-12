@@ -7,6 +7,14 @@ const (
 	BLACK
 )
 
+func (value PieceColor) generateOpposite() PieceColor {
+	if value == WHITE {
+		return BLACK
+	} else {
+		return WHITE
+	}
+}
+
 func (value PieceColor) String() string {
 	if value == WHITE {
 		return "W"
@@ -15,6 +23,6 @@ func (value PieceColor) String() string {
 	}
 }
 
-func pieceColorValues() []PieceColor {
+func PieceColorValues() []PieceColor {
 	return []PieceColor{WHITE, BLACK}
 }
