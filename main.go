@@ -2,14 +2,16 @@ package main
 
 import (
 	"domain"
-	"fmt"
+	"io/ioutil"
+	"os"
 )
 
 func main() {
 
-	chessBoard := domain.InitialChessBoard()
-	fmt.Println(chessBoard.String())
+	domain.Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
 
-	chessBoard.ApplyAction(domain.PieceAction{FromPosition: 8, ToPosition: 16})
-	fmt.Println(chessBoard.String())
+	chessGame := domain.InitialChessGame()
+	chessPlayer1 := domain.ChessAIPlayer{domain.WHITE, "Terminator"}
+	chessPlayer2 := domain.ChessAIPlayer{domain.BLACK, "C3P0"}
+	chessGame.StartGame(chessPlayer1, chessPlayer2)
 }

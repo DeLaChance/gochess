@@ -23,6 +23,6 @@ func (value PieceColor) String() string {
 	}
 }
 
-func PieceColorValues() []PieceColor {
+func GeneratePieceColorValues() []PieceColor {
 	return []PieceColor{WHITE, BLACK}
 }

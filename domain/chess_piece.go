@@ -5,33 +5,49 @@ type ChessPiece struct {
 	Color PieceColor
 }
 
-func (value ChessPiece) String() string {
-	if value.Color == WHITE {
+func (piece ChessPiece) GenerateHumanReadableDescription() string {
+	switch {
+	case piece.Type == PAWN:
+		return "Pawn"
+	case piece.Type == ROOK:
+		return "Rook"
+	case piece.Type == KNIGHT:
+		return "Knight"
+	case piece.Type == BISHOP:
+		return "Bishop"
+	case piece.Type == QUEEN:
+		return "Queen"
+	}
+	return "King"
+}
+
+func (piece ChessPiece) String() string {
+	if piece.Color == WHITE {
 		switch {
-		case value.Type == PAWN:
+		case piece.Type == PAWN:
 			return "♙"
-		case value.Type == ROOK:
+		case piece.Type == ROOK:
 			return "♖"
-		case value.Type == KNIGHT:
+		case piece.Type == KNIGHT:
 			return "♘"
-		case value.Type == BISHOP:
+		case piece.Type == BISHOP:
 			return "♙"
-		case value.Type == QUEEN:
+		case piece.Type == QUEEN:
 			return "♕"
 		}
 
 		return "♔"
 	} else {
 		switch {
-		case value.Type == PAWN:
+		case piece.Type == PAWN:
 			return "♟"
-		case value.Type == ROOK:
+		case piece.Type == ROOK:
 			return "♜"
-		case value.Type == KNIGHT:
+		case piece.Type == KNIGHT:
 			return "♞"
-		case value.Type == BISHOP:
+		case piece.Type == BISHOP:
 			return "♝"
-		case value.Type == QUEEN:
+		case piece.Type == QUEEN:
 			return "♛"
 		}
 

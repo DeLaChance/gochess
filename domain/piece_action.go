@@ -1,12 +1,22 @@
 package domain
 
-type PieceAction struct {
+import "fmt"
+
+type PieceMoveAction struct {
 	FromPosition int // 0 top-left, 63 bottom-right
 	ToPosition   int
 }
 
-func GeneratePieceAction(oldX int, oldY int, newX int, newY int) PieceAction {
-	return PieceAction{convertToOneDimensionalPosition(oldX, oldY), convertToOneDimensionalPosition(newX, newY)}
+func (action PieceMoveAction) GenerateReversedAction() PieceMoveAction {
+	return PieceMoveAction{action.ToPosition, action.FromPosition}
+}
+
+func GeneratePieceMoveAction(oldX int, oldY int, newX int, newY int) PieceMoveAction {
+	return PieceMoveAction{convertToOneDimensionalPosition(oldX, oldY), convertToOneDimensionalPosition(newX, newY)}
+}
+
+func (action PieceMoveAction) String() string {
+	return fmt.Sprintf("Move from %d to %d \n", action.FromPosition, action.ToPosition)
 }
 
 // Private methods
