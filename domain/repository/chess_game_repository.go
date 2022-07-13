@@ -1,5 +1,5 @@
 package repository
 
 type ChessGameRepository interface {
-	A() string
+	FindGameById(id int) ChessGameEntity
 }

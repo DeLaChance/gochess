@@ -49,6 +49,7 @@ INFO: 2022/07/12 18:16:17 chess_game.go:18: Board:
 - Refactor + cleanup the code
  
 - Implement human player
-- Implement DB layer
+[x] Implement DB layer
+- Fix bug with only storing first entity in a list
 - Implement service layer
 - Implement REST api's
