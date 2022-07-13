@@ -1,4 +1,4 @@
-package domain
+package config
 
 import (
 	"io"
@@ -12,7 +12,7 @@ var (
 	Error   *log.Logger
 )
 
-func Init(
+func InitializeLoggers(
 	traceHandle io.Writer,
 	infoHandle io.Writer,
 	warningHandle io.Writer,

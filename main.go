@@ -1,23 +1,32 @@
 package main
 
 import (
-	"config"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 
 	"go.uber.org/fx"
 
 	"adapter"
+	"config"
+	"repository"
 )
 
 func main() {
 	fx.New(
 		fx.Provide(config.GenerateDefaultConfig),
+		fx.Invoke(initializeApp),
 		fx.Provide(http.NewServeMux),
 		fx.Invoke(adapter.New),
+		fx.Invoke(repository.GenerateChessGameRepository),
 		fx.Invoke(registerHooks),
 	).Run()
+}
+
+func initializeApp() {
+	config.InitializeLoggers(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
 }
 
 func registerHooks(lifecycle fx.Lifecycle, mux *http.ServeMux, config *config.Config) {
