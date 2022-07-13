@@ -1,7 +1,9 @@
 package main
 
 import (
+	"config"
 	"context"
+	"fmt"
 	"net/http"
 
 	"go.uber.org/fx"
@@ -11,19 +13,19 @@ import (
 
 func main() {
 	fx.New(
+		fx.Provide(config.GenerateDefaultConfig),
 		fx.Provide(http.NewServeMux),
 		fx.Invoke(adapter.New),
 		fx.Invoke(registerHooks),
 	).Run()
 }
 
-func registerHooks(
-	lifecycle fx.Lifecycle, mux *http.ServeMux,
-) {
+func registerHooks(lifecycle fx.Lifecycle, mux *http.ServeMux, config *config.Config) {
 	lifecycle.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				go http.ListenAndServe(":8080", mux)
+				httpUrl := fmt.Sprintf("%s:%d", config.HttpHost, config.HttpPort)
+				go http.ListenAndServe(httpUrl, mux)
 				return nil
 			},
 		},
