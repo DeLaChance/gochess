@@ -2,10 +2,10 @@ package repository
 
 import (
 	"config"
-	"database/sql"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 type MySqlChessGameRepository struct {
@@ -17,19 +17,18 @@ func (repo MySqlChessGameRepository) A() string {
 
 func GenerateMySQLChessGameRepository(aConfig *config.Config) *MySqlChessGameRepository {
 
-	databaseUrl := aConfig.DatabaseUrl
+	db, err := gorm.Open(mysql.Open(aConfig.DatabaseUrl), &gorm.Config{})
 
-	db, err := sql.Open("mysql", databaseUrl)
 	if err == nil {
-		config.Info.Printf("Successfully connected to %s", databaseUrl)
+		config.Info.Printf("Successfully connected to %s", aConfig.DatabaseUrl)
 	} else {
 		panic(err)
 	}
 
-	// See "Important settings" section.
-	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	sqlDB, err := db.DB()
+	sqlDB.SetConnMaxLifetime(time.Minute * 3)
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetMaxIdleConns(10)
 
 	chessGameRepository := MySqlChessGameRepository{}
 	return &chessGameRepository

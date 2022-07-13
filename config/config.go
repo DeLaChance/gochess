@@ -7,5 +7,5 @@ type Config struct {
 }
 
 func GenerateDefaultConfig() *Config {
-	return &Config{HttpHost: "0.0.0.0", HttpPort: 8080, DatabaseUrl: "paul:atreides@54392/gochess"}
+	return &Config{HttpHost: "0.0.0.0", HttpPort: 8080, DatabaseUrl: "paul:atreides@/gochess"}
 }
