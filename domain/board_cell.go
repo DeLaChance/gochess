@@ -12,7 +12,7 @@ func (value BoardCell) IsEmpty() bool {
 	return value.Contents == nil
 }
 
-func (value BoardCell) String() string {
+func (value BoardCell) GenerateDrawableString() string {
 
 	stringValue := ""
 	if value.IsEmpty() {

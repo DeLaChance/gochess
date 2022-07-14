@@ -84,7 +84,7 @@ func (value ChessBoard) String() string {
 		output += "-----------------\n"
 
 		for _, cell := range rowOfCells {
-			output += cell.String()
+			output += cell.GenerateDrawableString()
 		}
 
 		output += "|\n"

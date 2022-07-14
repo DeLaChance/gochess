@@ -17,9 +17,9 @@ func (value PieceColor) generateOpposite() PieceColor {
 
 func (value PieceColor) String() string {
 	if value == WHITE {
-		return "W"
+		return "White"
 	} else {
-		return "B"
+		return "Black"
 	}
 }
 

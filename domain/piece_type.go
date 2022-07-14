@@ -11,6 +11,22 @@ const (
 	QUEEN
 )
 
+func (pieceType PieceType) GenerateHumanReadableDescription() string {
+	switch {
+	case pieceType == PAWN:
+		return "Pawn"
+	case pieceType == ROOK:
+		return "Rook"
+	case pieceType == KNIGHT:
+		return "Knight"
+	case pieceType == BISHOP:
+		return "Bishop"
+	case pieceType == QUEEN:
+		return "Queen"
+	}
+	return "King"
+}
+
 func (value PieceType) PieceValue() int {
 	switch {
 	case value == PAWN:

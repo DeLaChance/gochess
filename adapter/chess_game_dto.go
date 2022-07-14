@@ -5,6 +5,7 @@ import "domain"
 type ChessGameDto struct {
 	ID    uint               `json:"id"`
 	Moves []ChessGameMoveDto `json:"moves"`
+	State ChessGameStateDto  `json:"state"`
 }
 
 type ChessGameMoveDto struct {
@@ -12,8 +13,22 @@ type ChessGameMoveDto struct {
 	ToPosition   uint `json:"toPosition"`
 }
 
+type ChessGameStateDto struct {
+	Board []CellDto `json:"board"`
+}
+
+type CellDto struct {
+	State string    `json:"state"`
+	Piece *PieceDto `json:"piece"`
+}
+
+type PieceDto struct {
+	Type  string `json:"type"`
+	Color string `json:"color"`
+}
+
 func GenerateChessGameDto(game *domain.ChessGame) ChessGameDto {
-	return ChessGameDto{ID: game.ID, Moves: GenerateChessGameMoveDtos(game)}
+	return ChessGameDto{ID: game.ID, Moves: GenerateChessGameMoveDtos(game), State: GenerateState(game)}
 }
 
 func GenerateChessGameMoveDtos(game *domain.ChessGame) []ChessGameMoveDto {
@@ -24,4 +39,25 @@ func GenerateChessGameMoveDtos(game *domain.ChessGame) []ChessGameMoveDto {
 	}
 
 	return moveDtos
+}
+
+func GenerateState(game *domain.ChessGame) ChessGameStateDto {
+	var cellDtos []CellDto
+
+	board := game.Board
+	for _, rowOfCells := range board.Cells {
+		for _, cell := range rowOfCells {
+			var cellDto CellDto
+			if cell.IsEmpty() {
+				cellDto = CellDto{State: "empty"}
+			} else {
+				chessPiece := cell.Contents
+				cellDto = CellDto{State: "occupied", Piece: &PieceDto{Type: chessPiece.Type.GenerateHumanReadableDescription(), Color: chessPiece.Color.String()}}
+			}
+
+			cellDtos = append(cellDtos, cellDto)
+		}
+	}
+
+	return ChessGameStateDto{Board: cellDtos}
 }
