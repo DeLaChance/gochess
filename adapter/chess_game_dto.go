@@ -14,8 +14,11 @@ type ChessGameMoveDto struct {
 }
 
 type ChessGameStateDto struct {
-	Board        []CellDto `json:"board"`
-	ActivePlayer string    `json:"activePlayer"`
+	Board       []CellDto `json:"board"`
+	ActiveColor string    `json:"activeColor"`
+	Result      string    `json:"result"`
+	WhitePlayer PlayerDto `json:"whitePlayer"`
+	BlackPlayer PlayerDto `json:"blackPlayer"`
 }
 
 type CellDto struct {
@@ -26,6 +29,11 @@ type CellDto struct {
 type PieceDto struct {
 	Type  string `json:"type"`
 	Color string `json:"color"`
+}
+
+type PlayerDto struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
 
 func GenerateChessGameDto(game *domain.ChessGame) ChessGameDto {
@@ -60,5 +68,11 @@ func GenerateState(game *domain.ChessGame) ChessGameStateDto {
 		}
 	}
 
-	return ChessGameStateDto{Board: cellDtos, ActivePlayer: game.ActiveColor.String()}
+	return ChessGameStateDto{
+		Board:       cellDtos,
+		ActiveColor: game.ActiveColor.String(),
+		Result:      game.GameResult.String(),
+		WhitePlayer: PlayerDto{ID: game.WhitePlayer.ID, Name: game.WhitePlayer.Name},
+		BlackPlayer: PlayerDto{ID: game.BlackPlayer.ID, Name: game.BlackPlayer.Name},
+	}
 }

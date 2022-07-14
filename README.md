@@ -34,9 +34,16 @@ INFO: 2022/07/12 18:16:17 chess_game.go:18: Board:
 `go install`
 
 ## TODO:
+
+### Backend code
 [x] Basic structure
 [x] Pawn moves implemented
 [x] Simulate AI vs AI game
+[x] Implement DB layer
+[x] Fix bug with only storing first entity in a list
+[x] Implement service layer
+[x] Implement REST api's
+
 - Implement bishop moves
 - Implement knight moves
 - Implement rook moves
@@ -47,9 +54,10 @@ INFO: 2022/07/12 18:16:17 chess_game.go:18: Board:
 - Implement pawn to queen logic 
 - Implement rook and king swap
 - Refactor + cleanup the code
- 
 - Implement human player
-[x] Implement DB layer
-- Fix bug with only storing first entity in a list
-- Implement service layer
-- Implement REST api's
+- Move code from domain to service layer
+
+### CI/CD
+
+- Containerize
+- Gitlab pipeline

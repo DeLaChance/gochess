@@ -18,7 +18,17 @@ func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGame, error) {
 
 	if error == nil {
 		moveEntities := repo.findMovesByGameId(id)
-		return GenerateChessGame(gameEntity, moveEntities), nil
+		whitePlayer, player1NotFoundError := repo.findPlayerById(gameEntity.WhitePlayerID)
+		blackPlayer, player2NotFoundError := repo.findPlayerById(gameEntity.BlackPlayerID)
+
+		if player1NotFoundError != nil {
+			return ChessGame{}, player1NotFoundError
+		} else if player2NotFoundError != nil {
+			return ChessGame{}, player2NotFoundError
+		} else {
+			return ChessGame{ID: gameEntity.ID, Moves: moveEntities, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer}, nil
+		}
+
 	} else {
 		return ChessGame{}, error
 	}
@@ -80,5 +90,16 @@ func (repo *MySqlChessGameRepository) findGameEntityById(id int) (ChessGameEntit
 		return chessGame, errors.New("Not found")
 	} else {
 		return chessGame, nil
+	}
+}
+
+func (repo *MySqlChessGameRepository) findPlayerById(id uint) (ChessPlayerEntity, error) {
+
+	var player ChessPlayerEntity
+	repo.db.First(&player, id)
+	if player.ID == 0 {
+		return player, errors.New("Not found")
+	} else {
+		return player, nil
 	}
 }

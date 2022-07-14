@@ -1,6 +1,7 @@
 package domain
 
 type ChessAIPlayer struct {
+	ID    uint
 	Color PieceColor
 	Name  string
 }

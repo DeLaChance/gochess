@@ -12,20 +12,22 @@ type ChessGame struct {
 	CapturedWhitePieces []ChessPiece
 	CapturedBlackPieces []ChessPiece
 	GameResult          GameResult
+	WhitePlayer         ChessAIPlayer
+	BlackPlayer         ChessAIPlayer
 }
 
-func (game *ChessGame) StartGame(whitePlayer ChessPlayer, blackPlayer ChessPlayer) {
+func (game *ChessGame) StartGame() {
 	for game.GameResult == UNDETERMINED {
 
 		config.Info.Printf("Player turn is %s", game.ActiveColor.String())
 		config.Info.Printf("Board: \n" + game.Board.String() + "\n")
 
-		var activePlayer ChessPlayer
+		var activePlayer ChessAIPlayer
 
 		if game.ActiveColor == WHITE {
-			activePlayer = whitePlayer
+			activePlayer = game.WhitePlayer
 		} else {
-			activePlayer = blackPlayer
+			activePlayer = game.BlackPlayer
 		}
 
 		chosenAction := activePlayer.ChooseAction(*game)
@@ -93,7 +95,7 @@ func (game *ChessGame) CalculateScore(color PieceColor) int {
 }
 
 // Static methods
-func InitialChessGame(id uint) ChessGame {
+func InitialChessGame(id uint, whitePlayer ChessAIPlayer, blackPlayer ChessAIPlayer) ChessGame {
 	return ChessGame{
 		ID:                  id,
 		Board:               InitialChessBoard(),
@@ -101,7 +103,10 @@ func InitialChessGame(id uint) ChessGame {
 		Actions:             make([]PieceMoveAction, 0),
 		CapturedWhitePieces: make([]ChessPiece, 0),
 		CapturedBlackPieces: make([]ChessPiece, 0),
-		GameResult:          UNDETERMINED}
+		GameResult:          UNDETERMINED,
+		WhitePlayer:         whitePlayer,
+		BlackPlayer:         blackPlayer,
+	}
 }
 
 // Private methods

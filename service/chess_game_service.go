@@ -31,7 +31,9 @@ func GenerateChessGameService(repository *repository.MySqlChessGameRepository) *
 }
 
 func GenerateChessGame(chessGameEntity repository.ChessGame) domain.ChessGame {
-	chessGame := domain.InitialChessGame(chessGameEntity.ID)
+	whitePlayer := domain.ChessAIPlayer{ID: chessGameEntity.WhitePlayer.ID, Name: chessGameEntity.WhitePlayer.Name, Color: domain.WHITE}
+	blackPlayer := domain.ChessAIPlayer{ID: chessGameEntity.BlackPlayer.ID, Name: chessGameEntity.BlackPlayer.Name, Color: domain.BLACK}
+	chessGame := domain.InitialChessGame(chessGameEntity.ID, whitePlayer, blackPlayer)
 
 	for _, move := range chessGameEntity.Moves {
 		moveAction := GenerateMoveAction(move)
