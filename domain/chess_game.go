@@ -1,8 +1,11 @@
 package domain
 
+import "config"
+
 const MINIMUM_SCORE = -1000
 
 type ChessGame struct {
+	ID                  uint
 	Board               ChessBoard
 	ActiveColor         PieceColor
 	Actions             []PieceMoveAction
@@ -14,8 +17,8 @@ type ChessGame struct {
 func (game *ChessGame) StartGame(whitePlayer ChessPlayer, blackPlayer ChessPlayer) {
 	for game.GameResult == UNDETERMINED {
 
-		Info.Printf("Player turn is %s", game.ActiveColor.String())
-		Info.Printf("Board: \n" + game.Board.String() + "\n")
+		config.Info.Printf("Player turn is %s", game.ActiveColor.String())
+		config.Info.Printf("Board: \n" + game.Board.String() + "\n")
 
 		var activePlayer ChessPlayer
 
@@ -29,7 +32,7 @@ func (game *ChessGame) StartGame(whitePlayer ChessPlayer, blackPlayer ChessPlaye
 		if chosenAction == nil {
 			game.GameResult = DRAW
 		} else {
-			Info.Println(chosenAction.String())
+			config.Info.Println(chosenAction.String())
 
 			game.ApplyMoveAction(*chosenAction)
 		}
@@ -54,7 +57,7 @@ func (game *ChessGame) ApplyMoveAction(action PieceMoveAction) {
 
 	capturedPiece := game.Board.ApplyMoveAction(action)
 
-	Info.Printf("Board: \n" + game.Board.String() + "\n")
+	config.Info.Printf("Board: \n" + game.Board.String() + "\n")
 
 	if capturedPiece != nil {
 		if capturedPiece.Color == BLACK {
@@ -90,8 +93,9 @@ func (game *ChessGame) CalculateScore(color PieceColor) int {
 }
 
 // Static methods
-func InitialChessGame() ChessGame {
+func InitialChessGame(id uint) ChessGame {
 	return ChessGame{
+		ID:                  id,
 		Board:               InitialChessBoard(),
 		ActiveColor:         WHITE,
 		Actions:             make([]PieceMoveAction, 8),

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"config"
+	"errors"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -12,8 +13,14 @@ type MySqlChessGameRepository struct {
 	db *gorm.DB
 }
 
-func (repo MySqlChessGameRepository) A() string {
-	return "hello_world"
+func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGameEntity, error) {
+	var chessGame ChessGameEntity
+	repo.db.Debug().First(&chessGame, id)
+	if chessGame.ID == 0 {
+		return chessGame, errors.New("Not found")
+	} else {
+		return chessGame, nil
+	}
 }
 
 func GenerateMySQLChessGameRepository(aConfig *config.Config) *MySqlChessGameRepository {
@@ -38,7 +45,7 @@ func GenerateMySQLChessGameRepository(aConfig *config.Config) *MySqlChessGameRep
 	sqlDB.SetMaxOpenConns(10)
 	sqlDB.SetMaxIdleConns(10)
 
-	chessGameRepository := MySqlChessGameRepository{}
+	chessGameRepository := MySqlChessGameRepository{db: db}
 	return &chessGameRepository
 }
 

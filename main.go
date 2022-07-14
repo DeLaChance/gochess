@@ -1,10 +1,7 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"io/ioutil"
-	"net/http"
 	"os"
 
 	"go.uber.org/fx"
@@ -12,33 +9,21 @@ import (
 	"adapter"
 	"config"
 	"repository"
+	"service"
 )
 
 func main() {
 	fx.New(
-		fx.Provide(config.GenerateDefaultConfig),
 		fx.Invoke(initializeApp),
-		fx.Provide(http.NewServeMux),
-		fx.Invoke(adapter.New),
-		fx.Invoke(repository.GenerateChessGameRepository),
-		fx.Invoke(registerHooks),
+		fx.Provide(config.GenerateDefaultConfig),
+		fx.Provide(repository.GenerateChessGameRepository),
+		fx.Provide(service.GenerateChessGameService),
+		fx.Invoke(adapter.StartChessController),
 	).Run()
 }
 
 func initializeApp() {
 	config.InitializeLoggers(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
-}
-
-func registerHooks(lifecycle fx.Lifecycle, mux *http.ServeMux, config *config.Config) {
-	lifecycle.Append(
-		fx.Hook{
-			OnStart: func(ctx context.Context) error {
-				httpUrl := fmt.Sprintf("%s:%d", config.HttpHost, config.HttpPort)
-				go http.ListenAndServe(httpUrl, mux)
-				return nil
-			},
-		},
-	)
 }
 
 /*

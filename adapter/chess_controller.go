@@ -1,27 +1,43 @@
 package adapter
 
-import "net/http"
+import (
+	"config"
+	"fmt"
+	"net/http"
+	"service"
+	"strconv"
 
-// Handler for http requests
-type Handler struct {
-	mux *http.ServeMux
+	"github.com/gin-gonic/gin"
+)
+
+type ChessController struct {
+	service *service.ChessGameService
 }
 
-// New http handler
-func New(s *http.ServeMux) *Handler {
-	h := Handler{s}
-	h.registerRoutes()
+func StartChessController(applicationConfig *config.Config, service *service.ChessGameService) {
+	controller := ChessController{service: service}
 
-	return &h
+	// TODO: can this be done in a better way?
+	router := gin.Default()
+	router.GET("/api/game/:id", controller.GetGameById)
+
+	hostName := fmt.Sprintf("%s:%d", applicationConfig.HttpHost, applicationConfig.HttpPort)
+	router.Run(hostName)
+	config.Info.Printf("Started HTTP server at %s", hostName)
 }
 
-// RegisterRoutes for all http endpoints
-func (h *Handler) registerRoutes() {
-	h.mux.HandleFunc("/", h.HelloWorld)
-}
+func (controller *ChessController) GetGameById(context *gin.Context) {
 
-// HelloWorld handler which recieves the user request
-func (h *Handler) HelloWorld(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
-	w.Write([]byte("Hello World"))
+	gameId, err := strconv.Atoi(context.Param("id"))
+	if err == nil {
+		chessGame, error := controller.service.FetchById(gameId)
+		if error == nil {
+			chessGameDto := GenerateChessGameDto(chessGame)
+			context.IndentedJSON(http.StatusOK, chessGameDto)
+		} else {
+			context.Status(http.StatusNotFound)
+		}
+	} else {
+		context.Status(http.StatusBadRequest)
+	}
 }
