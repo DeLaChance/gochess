@@ -20,6 +20,8 @@ func StartChessController(applicationConfig *config.Config, service *service.Che
 	// TODO: can this be done in a better way?
 	router := gin.Default()
 	router.GET("/api/game/:id", controller.GetGameById)
+	router.POST("/api/game/", controller.CreateNewGame)
+	router.PUT("/api/game/:id/start", controller.StartNewGame)
 
 	hostName := fmt.Sprintf("%s:%d", applicationConfig.HttpHost, applicationConfig.HttpPort)
 	router.Run(hostName)
@@ -40,4 +42,29 @@ func (controller *ChessController) GetGameById(context *gin.Context) {
 	} else {
 		context.Status(http.StatusBadRequest)
 	}
+}
+
+func (controller *ChessController) CreateNewGame(context *gin.Context) {
+	game, error := controller.service.CreateNewGame()
+	if error == nil {
+		context.IndentedJSON(http.StatusCreated, GameCreatedDto{GameID: int(game.ID)})
+	} else {
+		context.Status(http.StatusInternalServerError)
+	}
+}
+
+func (controller *ChessController) StartNewGame(context *gin.Context) {
+
+	gameId, numberConversionError := strconv.Atoi(context.Param("id"))
+	if numberConversionError == nil {
+		game, error := controller.service.StartNewGame(gameId)
+		if error == nil {
+			context.IndentedJSON(http.StatusCreated, GameCreatedDto{GameID: int(game.ID)})
+		} else {
+			context.Status(http.StatusInternalServerError)
+		}
+	} else {
+		context.Status(http.StatusBadRequest)
+	}
+
 }

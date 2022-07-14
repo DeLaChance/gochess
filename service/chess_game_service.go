@@ -1,6 +1,7 @@
 package service
 
 import (
+	"config"
 	"domain"
 	"repository"
 )
@@ -9,20 +10,46 @@ type ChessGameService struct {
 	Repository repository.MySqlChessGameRepository
 }
 
-func (service *ChessGameService) FetchById(id int) (*domain.ChessGame, error) {
+func (service *ChessGameService) StartNewGame(id int) (domain.ChessGame, error) {
+	game, error := service.FetchById(id)
+	if error == nil {
+		startGameAsync(game, &service.Repository)
+		return game, nil
+	} else {
+		return domain.ChessGame{}, error
+	}
+}
+
+func (service *ChessGameService) FetchById(id int) (domain.ChessGame, error) {
 	chessGameEntity, error := service.Repository.FindGameById(id)
 
-	var chessGame *domain.ChessGame
+	var chessGame domain.ChessGame
 	if error == nil {
 		generatedChessGame := GenerateChessGame(chessGameEntity)
 
 		// Cannot do '&' on the return value of the method.
-		chessGame = &generatedChessGame
+		chessGame = generatedChessGame
 	} else {
-		chessGame = nil
+		chessGame = domain.ChessGame{}
 	}
 
 	return chessGame, error
+}
+
+func (service *ChessGameService) CreateNewGame() (domain.ChessGame, error) {
+
+	whitePlayer, whitePlayerNotFound := service.Repository.FindPlayerById(uint(1))
+	blackPlayer, blackPlayerNotFound := service.Repository.FindPlayerById(uint(2))
+
+	if whitePlayerNotFound != nil {
+		return domain.ChessGame{}, whitePlayerNotFound
+	} else if blackPlayerNotFound != nil {
+		return domain.ChessGame{}, blackPlayerNotFound
+	} else {
+		chessGameEntity := service.Repository.CreateNewGame(whitePlayer, blackPlayer)
+		generatedChessGame := GenerateChessGame(chessGameEntity)
+		return generatedChessGame, nil
+	}
 }
 
 // Static methods
@@ -45,4 +72,45 @@ func GenerateChessGame(chessGameEntity repository.ChessGame) domain.ChessGame {
 
 func GenerateMoveAction(move repository.ChessGameMoveEntity) domain.PieceMoveAction {
 	return domain.PieceMoveAction{FromPosition: move.FromPosition, ToPosition: move.ToPosition}
+}
+
+// Private methods
+func startGameAsync(game domain.ChessGame, repo *repository.MySqlChessGameRepository) {
+	go startGame(game, repo)
+}
+
+func startGame(game domain.ChessGame, repo *repository.MySqlChessGameRepository) {
+
+	count := 1
+	for game.GameResult == domain.UNDETERMINED {
+
+		config.Info.Printf("Player %s can make a move. Turn number %d.", game.ActiveColor.String(), count)
+		config.Info.Printf("Board: \n" + game.Board.String() + "\n")
+
+		var activePlayer domain.ChessAIPlayer
+
+		if game.ActiveColor == domain.WHITE {
+			activePlayer = game.WhitePlayer
+		} else {
+			activePlayer = game.BlackPlayer
+		}
+
+		chosenAction := activePlayer.ChooseAction(game)
+		if chosenAction == nil {
+			game.GameResult = domain.DRAW
+
+			config.Info.Printf("Game %d ended in a draw", game.ID)
+		} else {
+			game.ApplyMoveAction(*chosenAction)
+
+			config.Info.Println(chosenAction.String())
+
+			game.AdvanceToNextTurn()
+
+			moveEntity := repository.ChessGameMoveEntity{GameID: game.ID, FromPosition: chosenAction.FromPosition, ToPosition: chosenAction.ToPosition}
+			repo.SaveMoveEntity(moveEntity)
+		}
+
+		count += 1
+	}
 }

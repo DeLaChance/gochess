@@ -36,11 +36,11 @@ type PlayerDto struct {
 	Name string `json:"name"`
 }
 
-func GenerateChessGameDto(game *domain.ChessGame) ChessGameDto {
+func GenerateChessGameDto(game domain.ChessGame) ChessGameDto {
 	return ChessGameDto{ID: game.ID, Moves: GenerateChessGameMoveDtos(game), State: GenerateState(game)}
 }
 
-func GenerateChessGameMoveDtos(game *domain.ChessGame) []ChessGameMoveDto {
+func GenerateChessGameMoveDtos(game domain.ChessGame) []ChessGameMoveDto {
 	var moveDtos []ChessGameMoveDto = make([]ChessGameMoveDto, 0)
 	for _, move := range game.Actions {
 		moveDto := ChessGameMoveDto{FromPosition: uint(move.FromPosition), ToPosition: uint(move.ToPosition)}
@@ -50,7 +50,7 @@ func GenerateChessGameMoveDtos(game *domain.ChessGame) []ChessGameMoveDto {
 	return moveDtos
 }
 
-func GenerateState(game *domain.ChessGame) ChessGameStateDto {
+func GenerateState(game domain.ChessGame) ChessGameStateDto {
 	var cellDtos []CellDto
 
 	board := game.Board

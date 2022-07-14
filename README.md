@@ -38,6 +38,8 @@ Then run:
 ## Rest endpoints
 
 - Get the state of a game: GET `/api/game/:id`
+- Create a new game: POST `api/game`
+- Start the game: PUT `api/game/:id/start`
 
 
 ## To build

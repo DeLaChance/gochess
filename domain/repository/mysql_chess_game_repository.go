@@ -18,8 +18,8 @@ func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGame, error) {
 
 	if error == nil {
 		moveEntities := repo.findMovesByGameId(id)
-		whitePlayer, player1NotFoundError := repo.findPlayerById(gameEntity.WhitePlayerID)
-		blackPlayer, player2NotFoundError := repo.findPlayerById(gameEntity.BlackPlayerID)
+		whitePlayer, player1NotFoundError := repo.FindPlayerById(gameEntity.WhitePlayerID)
+		blackPlayer, player2NotFoundError := repo.FindPlayerById(gameEntity.BlackPlayerID)
 
 		if player1NotFoundError != nil {
 			return ChessGame{}, player1NotFoundError
@@ -32,6 +32,27 @@ func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGame, error) {
 	} else {
 		return ChessGame{}, error
 	}
+}
+
+func (repo *MySqlChessGameRepository) FindPlayerById(id uint) (ChessPlayerEntity, error) {
+
+	var player ChessPlayerEntity
+	repo.db.First(&player, id)
+	if player.ID == 0 {
+		return player, errors.New("Not found")
+	} else {
+		return player, nil
+	}
+}
+
+func (repo *MySqlChessGameRepository) CreateNewGame(whitePlayer ChessPlayerEntity, blackPlayer ChessPlayerEntity) ChessGame {
+	chessGameEntity := ChessGameEntity{WhitePlayerID: whitePlayer.ID, BlackPlayerID: blackPlayer.ID}
+	repo.db.Create(&chessGameEntity)
+	return ChessGame{ID: chessGameEntity.ID, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer}
+}
+
+func (repo *MySqlChessGameRepository) SaveMoveEntity(moveEntity ChessGameMoveEntity) {
+	repo.db.Create(&moveEntity)
 }
 
 func GenerateMySQLChessGameRepository(aConfig *config.Config) *MySqlChessGameRepository {
@@ -90,16 +111,5 @@ func (repo *MySqlChessGameRepository) findGameEntityById(id int) (ChessGameEntit
 		return chessGame, errors.New("Not found")
 	} else {
 		return chessGame, nil
-	}
-}
-
-func (repo *MySqlChessGameRepository) findPlayerById(id uint) (ChessPlayerEntity, error) {
-
-	var player ChessPlayerEntity
-	repo.db.First(&player, id)
-	if player.ID == 0 {
-		return player, errors.New("Not found")
-	} else {
-		return player, nil
 	}
 }

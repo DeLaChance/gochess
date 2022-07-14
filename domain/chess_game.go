@@ -16,33 +16,6 @@ type ChessGame struct {
 	BlackPlayer         ChessAIPlayer
 }
 
-func (game *ChessGame) StartGame() {
-	for game.GameResult == UNDETERMINED {
-
-		config.Info.Printf("Player turn is %s", game.ActiveColor.String())
-		config.Info.Printf("Board: \n" + game.Board.String() + "\n")
-
-		var activePlayer ChessAIPlayer
-
-		if game.ActiveColor == WHITE {
-			activePlayer = game.WhitePlayer
-		} else {
-			activePlayer = game.BlackPlayer
-		}
-
-		chosenAction := activePlayer.ChooseAction(*game)
-		if chosenAction == nil {
-			game.GameResult = DRAW
-		} else {
-			config.Info.Println(chosenAction.String())
-
-			game.ApplyMoveAction(*chosenAction)
-		}
-
-		game.swapTurns()
-	}
-}
-
 func (game *ChessGame) GeneratePossibleActions() []PieceMoveAction {
 	activeCells := game.Board.FindCellsByColor(game.ActiveColor)
 
@@ -94,6 +67,14 @@ func (game *ChessGame) CalculateScore(color PieceColor) int {
 	return game.Board.CalculateScore(color)
 }
 
+func (game *ChessGame) AdvanceToNextTurn() {
+	if game.ActiveColor == WHITE {
+		game.ActiveColor = BLACK
+	} else {
+		game.ActiveColor = WHITE
+	}
+}
+
 // Static methods
 func InitialChessGame(id uint, whitePlayer ChessAIPlayer, blackPlayer ChessAIPlayer) ChessGame {
 	return ChessGame{
@@ -106,14 +87,5 @@ func InitialChessGame(id uint, whitePlayer ChessAIPlayer, blackPlayer ChessAIPla
 		GameResult:          UNDETERMINED,
 		WhitePlayer:         whitePlayer,
 		BlackPlayer:         blackPlayer,
-	}
-}
-
-// Private methods
-func (game *ChessGame) swapTurns() {
-	if game.ActiveColor == WHITE {
-		game.ActiveColor = BLACK
-	} else {
-		game.ActiveColor = WHITE
 	}
 }
