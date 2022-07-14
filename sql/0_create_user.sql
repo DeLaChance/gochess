@@ -1,2 +1,2 @@
-CREATE USER 'paul'@'localhost' IDENTIFIED WITH authentication_plugin BY 'atreides';
+CREATE USER 'paul'@'localhost' IDENTIFIED WITH mysql_native_password BY 'atreides';
  GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'paul'@'localhost' WITH GRANT OPTION;

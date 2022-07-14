@@ -3,9 +3,6 @@ A Chess game programmed in the [Go programming language](https://go.dev/).
 
 Currently simulates 2 AI players.
 
-## To run
-`go run .`
-
 Example output:
 
 ```
@@ -30,6 +27,19 @@ INFO: 2022/07/12 18:16:17 chess_game.go:18: Board:
 -----------------
 ```
 
+
+## To run
+Install MySQL default port. Run the scripts under the `/sql` directory.
+
+Then run:
+
+`go run .`
+
+## Rest endpoints
+
+- Get the state of a game: GET `/api/game/:id`
+
+
 ## To build
 `go install`
 
@@ -44,6 +54,7 @@ INFO: 2022/07/12 18:16:17 chess_game.go:18: Board:
 [x] Implement service layer
 [x] Implement REST api's
 
+- Save simulated game to DB
 - Implement bishop moves
 - Implement knight moves
 - Implement rook moves
