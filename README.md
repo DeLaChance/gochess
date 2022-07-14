@@ -55,8 +55,8 @@ Then run:
 [x] Fix bug with only storing first entity in a list
 [x] Implement service layer
 [x] Implement REST api's
+[x] Save simulated game to DB
 
-- Save simulated game to DB
 - Implement bishop moves
 - Implement knight moves
 - Implement rook moves

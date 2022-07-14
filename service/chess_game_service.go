@@ -105,11 +105,11 @@ func startGame(game domain.ChessGame, repo *repository.MySqlChessGameRepository)
 
 			config.Info.Println(chosenAction.String())
 
-			game.AdvanceToNextTurn()
-
 			moveEntity := repository.ChessGameMoveEntity{GameID: game.ID, FromPosition: chosenAction.FromPosition, ToPosition: chosenAction.ToPosition}
 			repo.SaveMoveEntity(moveEntity)
 		}
+
+		game.AdvanceToNextTurn()
 
 		count += 1
 	}

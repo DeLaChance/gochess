@@ -1,7 +1,5 @@
 package domain
 
-import "config"
-
 const MINIMUM_SCORE = -1000
 
 type ChessGame struct {
@@ -31,8 +29,6 @@ func (game *ChessGame) ApplyMoveAction(action PieceMoveAction) {
 	game.Actions = append(game.Actions, action)
 
 	capturedPiece := game.Board.ApplyMoveAction(action)
-
-	config.Info.Printf("Board: \n" + game.Board.String() + "\n")
 
 	if capturedPiece != nil {
 		if capturedPiece.Color == BLACK {

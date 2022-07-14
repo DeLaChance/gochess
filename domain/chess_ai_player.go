@@ -1,5 +1,7 @@
 package domain
 
+import "math/rand"
+
 type ChessAIPlayer struct {
 	ID    uint
 	Color PieceColor
@@ -15,7 +17,8 @@ func (player ChessAIPlayer) PlayerName() string {
 }
 
 func (player ChessAIPlayer) ChooseAction(chessGame ChessGame) *PieceMoveAction {
-	return player.generateBestPossibleAction(chessGame, chessGame.GeneratePossibleActions())
+	possibleActions := shuffle(chessGame.GeneratePossibleActions())
+	return player.generateBestPossibleAction(chessGame, possibleActions)
 }
 
 // private method
@@ -37,4 +40,14 @@ func (player ChessAIPlayer) generateBestPossibleAction(chessGame ChessGame, acti
 	}
 
 	return chosenAction
+}
+
+func shuffle(src []PieceMoveAction) []PieceMoveAction {
+	dest := make([]PieceMoveAction, len(src))
+	perm := rand.Perm(len(src))
+	for i, v := range perm {
+		dest[v] = src[i]
+	}
+
+	return dest
 }

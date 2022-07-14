@@ -99,7 +99,7 @@ func insertInitialData(db *gorm.DB) {
 func (repo *MySqlChessGameRepository) findMovesByGameId(id int) []ChessGameMoveEntity {
 	var moves []ChessGameMoveEntity
 
-	repo.db.Find(&moves).Where("game_id = ?", id)
+	repo.db.Where("game_id = ?", id).Find(&moves)
 	return moves
 }
 
