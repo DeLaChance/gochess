@@ -48,15 +48,6 @@ Then run:
 ## TODO:
 
 ### Backend code
-[x] Basic structure
-[x] Pawn moves implemented
-[x] Simulate AI vs AI game
-[x] Implement DB layer
-[x] Fix bug with only storing first entity in a list
-[x] Implement service layer
-[x] Implement REST api's
-[x] Save simulated game to DB
-
 - Implement bishop moves
 - Implement knight moves
 - Implement rook moves
