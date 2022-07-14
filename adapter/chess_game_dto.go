@@ -14,7 +14,8 @@ type ChessGameMoveDto struct {
 }
 
 type ChessGameStateDto struct {
-	Board []CellDto `json:"board"`
+	Board        []CellDto `json:"board"`
+	ActivePlayer string    `json:"activePlayer"`
 }
 
 type CellDto struct {
@@ -59,5 +60,5 @@ func GenerateState(game *domain.ChessGame) ChessGameStateDto {
 		}
 	}
 
-	return ChessGameStateDto{Board: cellDtos}
+	return ChessGameStateDto{Board: cellDtos, ActivePlayer: game.ActiveColor.String()}
 }
