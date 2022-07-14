@@ -8,6 +8,7 @@ CREATE TABLE `gochess`.`chess_game` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     white_player INT NOT NULL,
     black_player INT NOT NULL,
+    `result` VARCHAR(16) NOT NULL,
     FOREIGN KEY (`white_player`) REFERENCES `gochess`.`chess_player`(`id`) ON UPDATE RESTRICT ON DELETE CASCADE,
     FOREIGN KEY (`black_player`) REFERENCES `gochess`.`chess_player`(`id`) ON UPDATE RESTRICT ON DELETE CASCADE
 );

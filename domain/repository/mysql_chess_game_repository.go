@@ -2,6 +2,7 @@ package repository
 
 import (
 	"config"
+	"domain"
 	"errors"
 	"time"
 
@@ -13,8 +14,9 @@ type MySqlChessGameRepository struct {
 	db *gorm.DB
 }
 
+// TODO: refactor these confusing methods.
 func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGame, error) {
-	gameEntity, error := repo.findGameEntityById(id)
+	gameEntity, error := repo.FindGameEntityById(id)
 
 	if error == nil {
 		moveEntities := repo.findMovesByGameId(id)
@@ -26,11 +28,24 @@ func (repo *MySqlChessGameRepository) FindGameById(id int) (ChessGame, error) {
 		} else if player2NotFoundError != nil {
 			return ChessGame{}, player2NotFoundError
 		} else {
-			return ChessGame{ID: gameEntity.ID, Moves: moveEntities, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer}, nil
+			return ChessGame{ID: gameEntity.ID, Moves: moveEntities, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer, Result: gameEntity.Result}, nil
 		}
 
 	} else {
 		return ChessGame{}, error
+	}
+}
+
+// TODO: refactor these confusing methods.
+func (repo *MySqlChessGameRepository) FindGameEntityById(id int) (ChessGameEntity, error) {
+
+	var chessGame ChessGameEntity
+
+	repo.db.First(&chessGame, id)
+	if chessGame.ID == 0 {
+		return chessGame, errors.New("Not found")
+	} else {
+		return chessGame, nil
 	}
 }
 
@@ -48,11 +63,15 @@ func (repo *MySqlChessGameRepository) FindPlayerById(id uint) (ChessPlayerEntity
 func (repo *MySqlChessGameRepository) CreateNewGame(whitePlayer ChessPlayerEntity, blackPlayer ChessPlayerEntity) ChessGame {
 	chessGameEntity := ChessGameEntity{WhitePlayerID: whitePlayer.ID, BlackPlayerID: blackPlayer.ID}
 	repo.db.Create(&chessGameEntity)
-	return ChessGame{ID: chessGameEntity.ID, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer}
+	return ChessGame{ID: chessGameEntity.ID, WhitePlayer: whitePlayer, BlackPlayer: blackPlayer, Result: chessGameEntity.Result}
 }
 
 func (repo *MySqlChessGameRepository) SaveMoveEntity(moveEntity ChessGameMoveEntity) {
 	repo.db.Create(&moveEntity)
+}
+
+func (repo *MySqlChessGameRepository) SaveGameEntity(gameEntity ChessGameEntity) {
+	repo.db.Save(&gameEntity)
 }
 
 func GenerateMySQLChessGameRepository(aConfig *config.Config) *MySqlChessGameRepository {
@@ -86,7 +105,7 @@ func insertInitialData(db *gorm.DB) {
 	db.FirstOrCreate(&player1, &player1)
 	db.FirstOrCreate(&player2, &player2)
 
-	game := ChessGameEntity{WhitePlayerID: player1.ID, BlackPlayerID: player2.ID}
+	game := ChessGameEntity{WhitePlayerID: player1.ID, BlackPlayerID: player2.ID, Result: domain.UNDETERMINED.String()}
 	db.FirstOrCreate(&game, &game)
 
 	firstMove := ChessGameMoveEntity{GameID: game.ID, FromPosition: 8, ToPosition: 24}
@@ -101,15 +120,4 @@ func (repo *MySqlChessGameRepository) findMovesByGameId(id int) []ChessGameMoveE
 
 	repo.db.Where("game_id = ?", id).Find(&moves)
 	return moves
-}
-
-func (repo *MySqlChessGameRepository) findGameEntityById(id int) (ChessGameEntity, error) {
-	var chessGame ChessGameEntity
-
-	repo.db.First(&chessGame, id)
-	if chessGame.ID == 0 {
-		return chessGame, errors.New("Not found")
-	} else {
-		return chessGame, nil
-	}
 }

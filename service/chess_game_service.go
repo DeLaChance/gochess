@@ -67,6 +67,10 @@ func GenerateChessGame(chessGameEntity repository.ChessGame) domain.ChessGame {
 		chessGame.ApplyMoveAction(moveAction)
 	}
 
+	config.Info.Println(chessGameEntity.Result)
+	chessGame.GameResult = domain.MapStringToGameResult(chessGameEntity.Result)
+	config.Info.Println(chessGame.GameResult.String())
+
 	return chessGame
 }
 
@@ -81,10 +85,9 @@ func startGameAsync(game domain.ChessGame, repo *repository.MySqlChessGameReposi
 
 func startGame(game domain.ChessGame, repo *repository.MySqlChessGameRepository) {
 
-	count := 1
 	for game.GameResult == domain.UNDETERMINED {
 
-		config.Info.Printf("Player %s can make a move. Turn number %d.", game.ActiveColor.String(), count)
+		config.Info.Printf("Player %s can make a move. Turn number %d.", game.ActiveColor.String(), len(game.Actions)+1)
 		config.Info.Printf("Board: \n" + game.Board.String() + "\n")
 
 		var activePlayer domain.ChessAIPlayer
@@ -100,17 +103,21 @@ func startGame(game domain.ChessGame, repo *repository.MySqlChessGameRepository)
 			game.GameResult = domain.DRAW
 
 			config.Info.Printf("Game %d ended in a draw", game.ID)
+
+			// TODO: separate method for this logic. Create mapper Game -> GameEntity
+			gameEntity, _ := repo.FindGameEntityById(int(game.ID))
+			gameEntity.Result = game.GameResult.String()
+			repo.SaveGameEntity(gameEntity)
 		} else {
 			game.ApplyMoveAction(*chosenAction)
 
 			config.Info.Println(chosenAction.String())
 
+			// TODO: separate method for this logic
 			moveEntity := repository.ChessGameMoveEntity{GameID: game.ID, FromPosition: chosenAction.FromPosition, ToPosition: chosenAction.ToPosition}
 			repo.SaveMoveEntity(moveEntity)
 		}
 
 		game.AdvanceToNextTurn()
-
-		count += 1
 	}
 }

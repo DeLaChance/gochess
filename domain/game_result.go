@@ -21,3 +21,15 @@ func (result GameResult) String() string {
 
 	return "UNDETERMINED"
 }
+
+func MapStringToGameResult(stringValue string) GameResult {
+	if stringValue == "DRAW" {
+		return DRAW
+	} else if stringValue == "WIN_WHITE" {
+		return WIN_WHITE
+	} else if stringValue == "WIN_BLACK" {
+		return WIN_BLACK
+	} else {
+		return UNDETERMINED
+	}
+}
