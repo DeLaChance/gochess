@@ -30,7 +30,7 @@ func GenerateChessGameService(repository *repository.MySqlChessGameRepository) *
 	return &ChessGameService{Repository: *repository}
 }
 
-func GenerateChessGame(chessGameEntity repository.ChessGameEntity) domain.ChessGame {
+func GenerateChessGame(chessGameEntity repository.ChessGame) domain.ChessGame {
 	chessGame := domain.InitialChessGame(chessGameEntity.ID)
 
 	for _, move := range chessGameEntity.Moves {

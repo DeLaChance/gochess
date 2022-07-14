@@ -1,10 +1,11 @@
 package repository
 
-import "gorm.io/gorm"
-
 type ChessGameEntity struct {
-	gorm.Model
-	WhitePlayer ChessPlayerEntity     `gorm:"foreignKey:ID"`
-	BlackPlayer ChessPlayerEntity     `gorm:"foreignKey:ID"`
-	Moves       []ChessGameMoveEntity `gorm:"foreignKey:ID"`
+	ID            uint `gorm:"column:id"`
+	WhitePlayerID uint `gorm:"column:white_player"`
+	BlackPlayerID uint `gorm:"column:black_player"`
+}
+
+func (ChessGameEntity) TableName() string {
+	return "chess_game"
 }

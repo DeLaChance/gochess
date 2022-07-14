@@ -98,9 +98,9 @@ func InitialChessGame(id uint) ChessGame {
 		ID:                  id,
 		Board:               InitialChessBoard(),
 		ActiveColor:         WHITE,
-		Actions:             make([]PieceMoveAction, 8),
-		CapturedWhitePieces: make([]ChessPiece, 8),
-		CapturedBlackPieces: make([]ChessPiece, 8),
+		Actions:             make([]PieceMoveAction, 0),
+		CapturedWhitePieces: make([]ChessPiece, 0),
+		CapturedBlackPieces: make([]ChessPiece, 0),
 		GameResult:          UNDETERMINED}
 }
 
